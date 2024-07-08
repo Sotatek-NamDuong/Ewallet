@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    container_name: micro-db
+    image: scylladb/scylla:5.1
+    ports:
+      - "9042:9042" #Default
+      - "9142:9142" #SSL
+      - "10000:10000" #Scylla REST API
+      - "9180:9180" #Prometheus API
+    volumes:
+      - ./data/micro-data:/var/lib/scylla
+      # - ./scylla.yaml:/etc/scylla/scylla.yaml
+    command: --listen-address 0.0.0.0 --rpc-address 0.0.0.0   --broadcast-rpc-address host.docker.internal --api-address 0.0.0.0 --prometheus-address 0.0.0.0
+    restart: always
+    networks:
+      scylla_network:
+        ipv4_address: 172.20.0.2
+
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=scylla
+      - DB_PASSWORD=scylla
+      - DB_LOCATION=localhost
+      - CERTIFICATE_ENABLE=false
+networks:
+  scylla_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  scylla_data:

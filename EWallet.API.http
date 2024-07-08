@@ -1,0 +1,6 @@
+@EWallet.API_HostAddress = http://localhost:5069
+
+GET {{EWallet.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
